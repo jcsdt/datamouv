@@ -2,7 +2,12 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :scrapper, start_page: 3000, nb_pages: 5, data_folder: "./data"
+config :scrapper,
+  start_page: 3000,
+  nb_pages: 5,
+  data_folder: "./data",
+  data_gouv_url: "https://www.data.gouv.fr/api/1/datasets/"
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,

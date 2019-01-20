@@ -24,7 +24,7 @@ defmodule Scrapper.CLI do
   @data_folder Application.get_env(:scrapper, :data_folder)
 
   defp process_args([]) do
-    process([@start_page, @nb_pages, @data_folder])
+    [@start_page, @nb_pages, @data_folder]
   end
 
   defp process_args(_) do
@@ -33,7 +33,7 @@ defmodule Scrapper.CLI do
 
   defp check_args([{start_page, _}, {nb_pages, _}, data_folder])
        when start_page > 0 and nb_pages > 0 do
-    process([start_page, nb_pages, data_folder])
+    [start_page, nb_pages, data_folder]
   end
 
   defp check_args(_) do
@@ -50,7 +50,9 @@ defmodule Scrapper.CLI do
     System.halt(0)
   end
 
-  defp process(any) do
-    any
+  defp process([start_page, nb_pages, data_folder]) do
+    Enum.to_list(start_page..(start_page + nb_pages))
+    |> Enum.map(&Scrapper.API.fetch/1)
+    |> Enum.map(&Scrapper.Parser.parse/1)
   end
 end
