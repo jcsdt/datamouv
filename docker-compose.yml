@@ -1,0 +1,11 @@
+version: '2'
+services:
+        scrapper:
+                build:
+                        context: scrapper
+                depends_on:
+                        - postgres
+        postgres:
+                image: postgres
+                volumes:
+                        - ./data:/var/lib/postgresql/data
