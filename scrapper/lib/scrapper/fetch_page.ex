@@ -1,16 +1,24 @@
-defmodule Scrapper.API do
-  @user_agent [{"User-agent", "Scrapper"}]
-  @data_gouv_url Application.get_env(:scrapper, :data_gouv_url)
+defmodule Scrapper.FetchPage do
+  use Task, restart: :transient
 
-  def fetch(page_number) do
-    data_gouv_url(page_number)
+  @me __MODULE__
+  @user_agent [{"User-agent", "Scrapper"}]
+
+  def start_link(url) do
+    Task.start_link(@me, :fetch, [url])
+  end
+
+  def fetch(url) do
+    IO.puts("Fetching #{url}")
+
+    url
     |> HTTPoison.get(@user_agent)
     |> handle_response
     |> decode_response
-  end
+    |> Scrapper.Parser.parse()
+    |> Enum.map(&Scrapper.Store.add_resource/1)
 
-  defp data_gouv_url(page_number) do
-    "#{@data_gouv_url}?page=#{page_number}&page_size=1"
+    Scrapper.Store.report_fetch_url_done()
   end
 
   defp handle_response({_, %{status_code: status, body: body}}) do
@@ -29,13 +37,5 @@ defmodule Scrapper.API do
 
   defp decode_response({:ok, body}) do
     parse(body)
-  end
-
-  defp decode_response({:error, error}) do
-    IO.puts("""
-      Error fetching data #{error}
-    """)
-
-    System.halt(2)
   end
 end

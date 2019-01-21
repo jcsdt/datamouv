@@ -23,8 +23,8 @@ defmodule ParserTest do
                }
              ]
            }) == [
-             [id: "1", title: "Nord Pas-de-Calais ( GeoJSON )", latest: "https://url"],
-             [id: "2", title: "Code électoral", latest: "https://url"]
+             %{id: "1", title: "Nord Pas-de-Calais ( GeoJSON )", latest: "https://url"},
+             %{id: "2", title: "Code électoral", latest: "https://url"}
            ]
   end
 
