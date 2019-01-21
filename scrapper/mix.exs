@@ -22,6 +22,7 @@ defmodule Scrapper.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:distillery, "~> 2.0"},
       {:httpoison, "~> 1.0.0"},
       {:poison, "~> 3.1"}
     ]
