@@ -51,8 +51,12 @@ defmodule Scrapper.CLI do
   end
 
   defp process([start_page, nb_pages, data_folder]) do
-    Enum.to_list(start_page..(start_page + nb_pages))
+    resources = Enum.to_list(start_page..(start_page + nb_pages))
     |> Enum.map(&Scrapper.API.fetch/1)
     |> Enum.map(&Scrapper.Parser.parse/1)
+
+    resources
+    |> Enum.flat_map(&(&1))
+    |> Enum.map(&Scrapper.Downloader.download(&1, data_folder))
   end
 end

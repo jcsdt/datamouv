@@ -10,6 +10,6 @@ defmodule Scrapper.Parser do
   end
 
   defp parse_single_resource(%{"id" => id, "title" => title, "latest" => latest}) do
-    [id: id, title: title, latest: latest]
+    %{id: id, title: title, latest: latest}
   end
 end
