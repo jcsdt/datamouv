@@ -16,9 +16,20 @@ defmodule Scrapper.Download do
     :ok = IO.binwrite(file, response.body)
     :ok = File.close(file)
 
-    {:ok, _} = Scrapper.Repo.insert(resource)
+    {:ok, _} = insert_if_absent(resource)
 
     Scrapper.Store.report_download_done()
+  end
+
+  defp insert_if_absent(resource) do
+    Scrapper.Repo.transaction(fn ->
+      existing_resource = Scrapper.Repo.get_by(Scrapper.Resource, resource_id: resource.resource_id)
+      if existing_resource != nil do
+	{:ok, existing_resource}
+      else
+        Scrapper.Repo.insert(resource)
+      end
+    end)
   end
 
   def path(folder, resource) do

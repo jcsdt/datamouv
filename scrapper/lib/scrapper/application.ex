@@ -27,23 +27,12 @@ defmodule Scrapper.Application do
     children = [
       Scrapper.Repo,
       {Scrapper.UrlGenerator, {start_page, nb_pages}},
-      {Task.Supervisor, name: Scrapper.TaskSupervisor},
       {Scrapper.Store, data_folder},
-      {Task, fn -> scrap_pages() end}
+      {Task.Supervisor, name: Scrapper.TaskSupervisor},
+      {Task, fn -> Scrapper.Store.scrap_pages() end}
     ]
 
     opts = [strategy: :one_for_all, name: Scrapper.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  def scrap_pages() do
-    case Scrapper.UrlGenerator.next_page_url() do
-      :done ->
-        :done
-
-      url ->
-        Scrapper.Store.fetch_url(url)
-        scrap_pages()
-    end
   end
 end

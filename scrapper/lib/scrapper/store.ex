@@ -4,11 +4,22 @@ defmodule Scrapper.Store do
   @me __MODULE__
 
   defmodule State do
-    defstruct(pending_tasks: 0, data_folder: "")
+    defstruct(pending_tasks: 0, all_pages_generated: false, data_folder: "")
   end
 
   def start_link(data_folder) do
     Agent.start_link(fn -> %State{data_folder: data_folder} end, name: @me)
+  end
+
+  def scrap_pages() do
+    case Scrapper.UrlGenerator.next_page_url() do
+      :done ->
+    	Agent.update(@me, fn state -> %{state | all_pages_generated: true} end)
+
+      url ->
+        Scrapper.Store.fetch_url(url)
+        Scrapper.Store.scrap_pages()
+    end
   end
 
   def fetch_url(url) do
@@ -40,15 +51,16 @@ defmodule Scrapper.Store do
   end
 
   defp report_task_completed() do
-    pending_tasks =
-      Agent.get_and_update(@me, fn state = %{pending_tasks: p} ->
-        {p, %{state | pending_tasks: p - 1}}
+    state =
+      Agent.get_and_update(@me, fn state = %{pending_tasks: p, all_pages_generated: b} ->
+        {{p, b}, %{state | pending_tasks: p - 1}}
       end)
 
-    are_we_done(pending_tasks)
+    IO.inspect(state)
+    are_we_done(state)
   end
 
-  def are_we_done(0) do
+  def are_we_done({0, true}) do
     IO.puts("We are all done, bye, bye...")
     System.halt(0)
   end
