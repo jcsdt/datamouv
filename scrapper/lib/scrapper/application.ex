@@ -21,6 +21,7 @@ defmodule Scrapper.Application do
 
   defp process([start_page, nb_pages, data_folder]) do
     children = [
+      Scrapper.Repo,
       {Scrapper.UrlGenerator, {start_page, nb_pages}},
       {Task.Supervisor, name: Scrapper.TaskSupervisor},
       {Scrapper.Store, data_folder},

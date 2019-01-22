@@ -1,6 +1,7 @@
-FROM bitwalker/alpine-elixir:latest as build
+FROM bitwalker/alpine-elixir:1.8.0 as build
 
 COPY rel ./rel
+COPY priv ./priv
 COPY config ./config
 COPY lib ./lib
 COPY mix.exs .
@@ -10,12 +11,16 @@ ENV MIX_ENV=prod
 RUN mix deps.get
 RUN mix release
 
-FROM pentacent/alpine-erlang-base:latest
+FROM bitwalker/alpine-elixir:1.8.0
+
+RUN apk add postgresql-client
 
 COPY --from=build /opt/app/_build/prod/rel/scrapper/releases/0.1.0/scrapper.tar.gz .
 RUN tar -xvf scrapper.tar.gz
 
+COPY ./bin/entrypoint.sh ./bin/entrypoint.sh
+RUN chmod +x ./bin/entrypoint.sh
+
 USER default
 
-ENTRYPOINT ["./bin/scrapper"]
-CMD ["foreground"]
+ENTRYPOINT ["/bin/bash", "bin/entrypoint.sh"]

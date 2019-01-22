@@ -12,10 +12,16 @@ defmodule Scrapper.Download do
     {:ok, response} =
       HTTPoison.get(resource.latest, [], follow_redirect: true, recv_timeout: 60_000)
 
-    {:ok, file} = File.open("#{folder}/#{resource.id}", [:write])
+    {:ok, file} = File.open(path(folder, resource), [:write])
     :ok = IO.binwrite(file, response.body)
     :ok = File.close(file)
 
+    {:ok, _} = Scrapper.Repo.insert(resource)
+
     Scrapper.Store.report_download_done()
+  end
+
+  def path(folder, resource) do
+    "#{folder}/#{resource.resource_id}"
   end
 end

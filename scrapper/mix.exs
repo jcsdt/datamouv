@@ -24,7 +24,9 @@ defmodule Scrapper.MixProject do
     [
       {:distillery, "~> 2.0"},
       {:httpoison, "~> 1.0.0"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"}
     ]
   end
 end

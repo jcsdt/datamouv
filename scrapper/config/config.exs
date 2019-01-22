@@ -2,7 +2,14 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :scrapper, Scrapper.Repo,
+  database: "postgres",
+  username: "postgres",
+  password: "postgres",
+  hostname: "postgres"
+
 config :scrapper,
+  ecto_repos: [Scrapper.Repo],
   start_page: 3000,
   nb_pages: 5,
   data_folder: "./data",
