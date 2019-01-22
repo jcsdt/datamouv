@@ -3,9 +3,23 @@ services:
         scrapper:
                 build:
                         context: scrapper
+                volumes:
+                        - data-volume:/opt/app/data
                 depends_on:
                         - postgres
+        server:
+                build:
+                        context: server
+                volumes:
+                        - data-volume:/opt/app/data
+                ports:
+                        - "4000:4000"
+                depends_on:
+                        - scrapper
         postgres:
                 image: postgres
                 environment:
                         POSTGRES_PASSWORD: postgres
+
+volumes:
+  data-volume:

@@ -5,6 +5,7 @@ defmodule Server.Application do
 
   def start(_type, _args) do
     children = [
+      {Server.Repo, []},
       Plug.Cowboy.child_spec(
         scheme: :http,
         plug: Server.Router,

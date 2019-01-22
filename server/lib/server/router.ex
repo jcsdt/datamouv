@@ -6,21 +6,26 @@ defmodule Server.Router do
 
   get "/resources" do
     conn
-    |> put_resp_header("content-type", "application/json")
-    |> resp(200, 
-      Poison.encode!([
-        %{title: "Hello", latest: "https://url"},
-        %{title: "World", latest: "https://url"}
-      ])
-      )
-      |> send_resp
+    |> resp(200, list_resources())
+    |> put_resp_content_type("application/json")
+    |> send_resp
+  end
+
+  def list_resources() do
+    Server.Resource
+    |> Server.Repo.all
+    |> Server.Encoder.encode
   end
 
   get "/resource/:id" do
-    conn
-    |> put_resp_header("content-type", "application/json")
-    |> resp(200, Poison.encode!(%{id: "#{id}"}))
-    |> send_resp
+    path = "./data/#{id}"
+    if File.exists?(path) do
+      conn
+      |> send_file(200, path)
+    else
+      conn
+      |> send_resp(404, "Not found")
+    end
   end
 
   match _ do

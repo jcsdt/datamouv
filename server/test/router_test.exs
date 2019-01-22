@@ -5,21 +5,12 @@ defmodule RouterTest do
 
   @opts Server.Router.init([])
 
-  test "/resources endpoint" do
-    conn = conn(:get, "/resources")
+  test "not found" do
+    conn = conn(:get, "/something")
 
     conn = Server.Router.call(conn, @opts)
 
     assert conn.state == :sent
-    assert conn.status == 200
-  end
-
-  test "/resource/id endpoint" do
-    conn = conn(:get, "/resource/123")
-
-    conn = Server.Router.call(conn, @opts)
-
-    assert conn.state == :sent
-    assert conn.status == 200
+    assert conn.status == 404
   end
 end
