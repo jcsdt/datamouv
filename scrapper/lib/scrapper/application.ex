@@ -9,6 +9,10 @@ defmodule Scrapper.Application do
     |> process
   end
 
+  @start_page Application.get_env(:scrapper, :start_page)
+  @nb_pages Application.get_env(:scrapper, :nb_pages)
+  @data_folder Application.get_env(:scrapper, :data_folder)
+
   defp process(:help) do
     IO.puts("""
         Usage: scrapper < start page | default: #{@start_page} > < number of pages to scrap | default: #{
