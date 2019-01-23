@@ -10,13 +10,9 @@ class App extends Component {
   }
 
   componentDidMount() {
-//    fetch("http://localhost:4000/resources")
-//	  .then(response => response.json())
-//	  .then(data => this.setState({ resources: data }));
-	this.setState({ resources: [
-	  { title: "Hello", id: 1, latest: "http://url" },
-	  { title: "Bonjour", id: 2, latest: "http://url" }
-	] })
+    fetch("http://localhost:80/api/resources")
+	  .then(response => response.json())
+	  .then(data => this.setState({ resources: data }));
   }
 
   render() {
@@ -32,7 +28,7 @@ class App extends Component {
 				{resource.title}
 		    	    </td>
 			    <td className="download-link">
-			        <a href={"http://localhost:4000/resource/" + resource.id} download={resource.id}>Download</a>
+			        <a href={"http://localhost:80/api/resource/" + resource.id} download={resource.id}>Download</a>
 			    </td>
 			</tr>
 	    	  }
