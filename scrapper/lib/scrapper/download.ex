@@ -1,5 +1,5 @@
 defmodule Scrapper.Download do
-  use Task, restart: :transient
+  use Task
 
   def start_link(resource, folder) do
     Task.start_link(__MODULE__, :download, [resource, folder])

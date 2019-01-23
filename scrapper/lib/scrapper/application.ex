@@ -28,11 +28,11 @@ defmodule Scrapper.Application do
       Scrapper.Repo,
       {Scrapper.UrlGenerator, {start_page, nb_pages}},
       {Scrapper.Store, data_folder},
-      {Task.Supervisor, name: Scrapper.TaskSupervisor},
-      {Task, fn -> Scrapper.Store.scrap_pages() end}
+      {Task, fn -> Scrapper.Store.scrap_pages() end},
+      {Task.Supervisor, name: Scrapper.TaskSupervisor, max_restarts: 100_000}
     ]
 
-    opts = [strategy: :one_for_all, name: Scrapper.Supervisor]
+    opts = [strategy: :one_for_one, name: Scrapper.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

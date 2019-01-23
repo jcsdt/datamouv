@@ -1,5 +1,5 @@
 defmodule Scrapper.FetchPage do
-  use Task, restart: :transient
+  use Task
 
   @me __MODULE__
   @user_agent [{"User-agent", "Scrapper"}]
