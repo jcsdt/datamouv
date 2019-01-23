@@ -16,6 +16,13 @@ services:
                         - "4000:4000"
                 depends_on:
                         - scrapper
+        frontend:
+                build:
+                        context: frontend
+                ports:
+                        - "80:80"
+                depends_on:
+                        - server
         postgres:
                 image: postgres
                 environment:
