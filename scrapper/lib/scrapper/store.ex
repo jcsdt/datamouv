@@ -1,6 +1,12 @@
 defmodule Scrapper.Store do
   use Agent
 
+  @moduledoc """
+  Start the scrapping
+  Start tasks to fetch pages and download resources
+  Keep track of the pending tasks and exit when they are all completed
+  """
+
   @me __MODULE__
 
   defmodule State do

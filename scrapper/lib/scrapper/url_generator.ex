@@ -1,6 +1,11 @@
 defmodule Scrapper.UrlGenerator do
   use Agent
 
+  @moduledoc """
+  Generate the urls to scrap
+  Send :done when all urls were generated
+  """
+
   @me __MODULE__
 
   @data_gouv_url Application.get_env(:scrapper, :data_gouv_url)

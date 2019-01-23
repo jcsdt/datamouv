@@ -1,6 +1,10 @@
 defmodule Server.Router do
   use Plug.Router
 
+  @moduledoc """
+  Serves the API endpoints
+  """
+
   plug(:match)
   plug(:dispatch)
 

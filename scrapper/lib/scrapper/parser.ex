@@ -1,4 +1,8 @@
 defmodule Scrapper.Parser do
+  @moduledoc """
+  Parse a JSON document into Resources
+  """
+
   def parse(%{"data" => data}) do
     data
     |> Enum.flat_map(&parse_resources/1)

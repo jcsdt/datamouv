@@ -1,4 +1,8 @@
 defmodule Server.Encoder do
+  @moduledoc """
+  Encode resource records into JSON
+  """
+
   def encode(resources) do
     resources
     |> Enum.map(&transcode_single_resource/1)

@@ -1,4 +1,7 @@
 defmodule Scrapper.CLI do
+  @moduledoc """
+  Module to parse and check the arguments passed on the commandline.
+  """
   def parse_argv(argv) do
     OptionParser.parse(argv,
       switches: [help: :boolean],

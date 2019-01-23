@@ -1,6 +1,11 @@
 defmodule Scrapper.Download do
   use Task
 
+  @moduledoc """
+  Task to download a resource and save a record in the database
+  if the resource does not exist
+  """
+
   def start_link(resource, folder) do
     Task.start_link(__MODULE__, :download, [resource, folder])
   end

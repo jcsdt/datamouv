@@ -1,6 +1,10 @@
 defmodule Scrapper.FetchPage do
   use Task
 
+  @moduledoc """
+  Fetch a page and emit tasks to download all resources on it
+  """
+
   @me __MODULE__
   @user_agent [{"User-agent", "Scrapper"}]
 
