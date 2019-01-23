@@ -10,7 +10,7 @@ defmodule Scrapper.Download do
     :ok = File.mkdir_p(folder)
 
     {:ok, response} =
-      HTTPoison.get(resource.latest, [], follow_redirect: true, recv_timeout: 60_000)
+      HTTPoison.get(resource.latest, [], follow_redirect: true, recv_timeout: 30_000)
 
     {:ok, file} = File.open(path(folder, resource), [:write])
     :ok = IO.binwrite(file, response.body)
@@ -23,9 +23,11 @@ defmodule Scrapper.Download do
 
   defp insert_if_absent(resource) do
     Scrapper.Repo.transaction(fn ->
-      existing_resource = Scrapper.Repo.get_by(Scrapper.Resource, resource_id: resource.resource_id)
+      existing_resource =
+        Scrapper.Repo.get_by(Scrapper.Resource, resource_id: resource.resource_id)
+
       if existing_resource != nil do
-	{:ok, existing_resource}
+        {:ok, existing_resource}
       else
         Scrapper.Repo.insert(resource)
       end

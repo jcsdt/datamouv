@@ -14,7 +14,7 @@ defmodule Scrapper.Store do
   def scrap_pages() do
     case Scrapper.UrlGenerator.next_page_url() do
       :done ->
-    	Agent.update(@me, fn state -> %{state | all_pages_generated: true} end)
+        Agent.update(@me, fn state -> %{state | all_pages_generated: true} end)
 
       url ->
         Scrapper.Store.fetch_url(url)
@@ -25,7 +25,9 @@ defmodule Scrapper.Store do
   def fetch_url(url) do
     add_pending_task()
 
-    Task.Supervisor.start_child(Scrapper.TaskSupervisor, Scrapper.FetchPage, :fetch, [url])
+    Task.Supervisor.start_child(Scrapper.TaskSupervisor, Scrapper.FetchPage, :fetch, [url],
+      restart: :transient
+    )
   end
 
   def report_fetch_url_done() do
@@ -34,12 +36,18 @@ defmodule Scrapper.Store do
 
   def add_resource(resource) do
     add_pending_task()
-    %{data_folder: folder} = Agent.get(@me, &(&1))
+    %{data_folder: folder} = Agent.get(@me, & &1)
 
-    Task.Supervisor.start_child(Scrapper.TaskSupervisor, Scrapper.Download, :download, [
-      resource,
-      folder
-    ])
+    Task.Supervisor.start_child(
+      Scrapper.TaskSupervisor,
+      Scrapper.Download,
+      :download,
+      [
+        resource,
+        folder
+      ],
+      restart: :transient
+    )
   end
 
   def report_download_done() do
@@ -53,10 +61,9 @@ defmodule Scrapper.Store do
   defp report_task_completed() do
     state =
       Agent.get_and_update(@me, fn state = %{pending_tasks: p, all_pages_generated: b} ->
-        {{p, b}, %{state | pending_tasks: p - 1}}
+        {{p - 1, b}, %{state | pending_tasks: p - 1}}
       end)
 
-    IO.inspect(state)
     are_we_done(state)
   end
 
