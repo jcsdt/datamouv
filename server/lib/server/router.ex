@@ -4,7 +4,7 @@ defmodule Server.Router do
   plug(:match)
   plug(:dispatch)
 
-  get "/resources" do
+  get "/api/resources" do
     conn
     |> resp(200, list_resources())
     |> put_resp_content_type("application/json")
@@ -13,12 +13,13 @@ defmodule Server.Router do
 
   def list_resources() do
     Server.Resource
-    |> Server.Repo.all
-    |> Server.Encoder.encode
+    |> Server.Repo.all()
+    |> Server.Encoder.encode()
   end
 
-  get "/resource/:id" do
+  get "/api/resource/:id" do
     path = "./data/#{id}"
+
     if File.exists?(path) do
       conn
       |> send_file(200, path)
@@ -26,6 +27,13 @@ defmodule Server.Router do
       conn
       |> send_resp(404, "Not found")
     end
+  end
+
+  options _ do
+    conn
+    |> put_resp_header("access-control-allow-origin", "*")
+    |> resp(200, "")
+    |> send_resp
   end
 
   match _ do

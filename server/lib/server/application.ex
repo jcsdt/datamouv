@@ -8,8 +8,7 @@ defmodule Server.Application do
       {Server.Repo, []},
       Plug.Cowboy.child_spec(
         scheme: :http,
-        plug: Server.Router,
-        options: [port: 4000]
+        plug: Server.Endpoint
       )
     ]
 
