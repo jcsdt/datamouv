@@ -15,7 +15,7 @@ class App extends Component {
     fetch("http://localhost:80/api/resources")
 	  .then(response => {
 		if (response.ok) {
-		  response.json()
+		  return response.json()
 		} else {
 		  throw Error(response.statusText);
 		}

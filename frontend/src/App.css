@@ -16,6 +16,7 @@
   border-collapse : collapse;
   width: 60%;
   min-width: 200px;
+  margin: 3em;
 }
 
 .resources-list tr td {
