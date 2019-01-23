@@ -6,17 +6,49 @@ class App extends Component {
     super(props);
     this.state = {
       resources: [],
+      isLoading: true,
+      isError: false,
     };
   }
 
   componentDidMount() {
     fetch("http://localhost:80/api/resources")
-	  .then(response => response.json())
-	  .then(data => this.setState({ resources: data }));
+	  .then(response => {
+		if (response.ok) {
+		  response.json()
+		} else {
+		  throw Error(response.statusText);
+		}
+	  })
+	  .then(data => this.setState({ isLoading: false, isError: false, resources: data }))
+	  .catch(error => {
+	     console.log(error)
+	     this.setState({ isLoading: false, isError: true, resources: [] })
+	  });
   }
 
   render() {
-    const { resources } = this.state;
+    const { resources, isLoading, isError } = this.state;
+
+    if (isLoading) {
+	return (
+      		<div className="App">
+      		  <header className="App-header">
+		    <p>Loading data...</p>
+      		  </header>
+      		</div>
+	);
+    }
+
+    if (isError) {
+	return (
+      		<div className="App">
+      		  <header className="App-header">
+      		    <p>An error occurred, please retry...</p>
+      		  </header>
+      		</div>
+	);
+    }
 
     return (
       <div className="App">
